@@ -12,14 +12,10 @@ while usr_inp == 0:
         print("Bad input")
 
 if usr_inp == 1:
-    conn = socket.socket()
+    conn = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     host = socket.gethostname()
     conn.bind((host, port))
 
-    conn.listen(5)
-    c, addr = conn.accept()
-    print('Got connection from', addr)
-    c.send('connected')
     while True:
         recv_msg = conn.recv(1024)
         if not recv_msg:
@@ -27,11 +23,12 @@ if usr_inp == 1:
 
         print(recv_msg)
         msg = input("> ")
-        conn.send(msg)
+        conn.sendto(msg)
     conn.close()
 
 else:
-    peer = input("Peer IP: ")
+    # peer = input("Peer IP: ")
+    peer = socket.gethostname()
     conn = socket.socket()
     conn.connect((peer, port))
 
@@ -42,5 +39,5 @@ else:
 
         print(recv_msg)
         msg = input("> ")
-        conn.send(msg)
+        conn.sendto(msg)
     conn.close()
